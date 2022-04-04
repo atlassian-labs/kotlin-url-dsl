@@ -9,9 +9,9 @@ import java.net.URI
 
 @Suppress("DANGEROUS_CHARACTERS")
 internal data class UriBuilder(
-    val pathSegments: List<String>,
-    val queryParameters: List<Parameter>,
-    val fragmentParameters: List<Parameter>,
+    val pathSegments: List<String> = emptyList(),
+    val queryParameters: List<Parameter> = emptyList(),
+    val fragmentParameters: List<Parameter> = emptyList(),
 ) : UriPathBuilder, UriQueryBuilder, UriBuildTerminator {
     override fun div(pathSegment: Any): UriPathBuilder =
         div(listOf(pathSegment))
@@ -118,15 +118,18 @@ internal data class UriBuilder(
     override fun buildUri(): URI = URI(buildStringUri())
 
     private fun escapePathSegment(pathSegment: String): String {
-        TODO("Not yet implemented")
+        // TODO path escaping
+        return pathSegment
     }
 
     private fun escapeQueryValue(queryValue: String): String {
-        TODO("Not yet implemented")
+        // TODO query escaping
+        return queryValue
     }
 
-    private fun escapeFragmentValue(queryValue: String): String {
-        TODO("Not yet implemented")
+    private fun escapeFragmentValue(fragmentValue: String): String {
+        // TODO fragment escaping
+        return fragmentValue
     }
 
     private fun escape(value: Any, escapingFunction: (String) -> String): String =
