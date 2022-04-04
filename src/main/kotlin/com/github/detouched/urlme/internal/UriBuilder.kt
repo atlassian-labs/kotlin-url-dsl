@@ -86,12 +86,36 @@ internal data class UriBuilder(
         ).fragmentBuildingView()
 
     override fun buildStringUri(): String {
-        TODO("Not yet implemented")
+        fun StringBuilder.appendParameters(
+            parameters: List<Parameter>,
+            sectionDelimiter: Char,
+            parametersDelimiter: Char,
+        ) {
+            if (parameters.isNotEmpty()) {
+                append(sectionDelimiter)
+                parameters.forEachIndexed { index, parameter ->
+                    when (parameter) {
+                        is Parameter.SingleValue -> append(parameter.value)
+                        is Parameter.NamedValue -> append("${parameter.name}=${parameter.value}")
+                    }
+                    if (index < parameters.size - 1) {
+                        append(parametersDelimiter)
+                    }
+                }
+            }
+        }
+
+        return buildString {
+            pathSegments.forEach { segment ->
+                append('/')
+                append(segment)
+            }
+            appendParameters(queryParameters, '?', '&')
+            appendParameters(fragmentParameters, '#', '&')
+        }
     }
 
-    override fun buildUri(): URI {
-        TODO("Not yet implemented")
-    }
+    override fun buildUri(): URI = URI(buildStringUri())
 
     private fun escapePathSegment(pathSegment: String): String {
         TODO("Not yet implemented")
