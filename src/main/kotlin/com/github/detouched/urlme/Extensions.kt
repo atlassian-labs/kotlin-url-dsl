@@ -1,5 +1,5 @@
 package com.github.detouched.urlme
 
-internal class RawValue(value: Any)
+import com.github.detouched.urlme.internal.RawValue
 
 fun Any.raw(): Any = RawValue(this)
