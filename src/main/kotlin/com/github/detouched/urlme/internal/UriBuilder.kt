@@ -5,11 +5,13 @@ import com.github.detouched.urlme.UriBuildTerminator
 import com.github.detouched.urlme.UriFragmentBuilder
 import com.github.detouched.urlme.UriPathBuilder
 import com.github.detouched.urlme.UriQueryBuilder
+import com.github.detouched.urlme.internal.escape.Escaper
+import com.github.detouched.urlme.internal.escape.UriComponentType.PATH_SEGMENT
 import java.net.URI
 
 @Suppress("DANGEROUS_CHARACTERS")
 internal data class UriBuilder(
-    val pathSegments: List<String> = emptyList(),
+    val pathSegments: List<Any> = emptyList(),
     val queryParameters: List<Parameter> = emptyList(),
     val fragmentParameters: List<Parameter> = emptyList(),
 ) : UriPathBuilder, UriQueryBuilder, UriBuildTerminator {
@@ -17,36 +19,18 @@ internal data class UriBuilder(
         div(listOf(pathSegment))
 
     override fun div(pathSegments: Iterable<Any>): UriPathBuilder =
-        copy(
-            pathSegments = buildList {
-                addAll(this@UriBuilder.pathSegments)
-                addAll(pathSegments.map { escape(it, this@UriBuilder::escapePathSegment) })
-            }
-        )
+        copy(pathSegments = this@UriBuilder.pathSegments + pathSegments)
 
     override fun `?`(queryParameter: Any): UriQueryBuilder =
-        copy(
-            queryParameters = buildList {
-                addAll(this@UriBuilder.queryParameters)
-                add(Parameter.SingleValue(escape(queryParameter, this@UriBuilder::escapeQueryValue)))
-            }
-        )
+        copy(queryParameters = this@UriBuilder.queryParameters + Parameter.SingleValue(queryParameter))
 
     override fun `?`(queryParameter: NamedValueParameter): UriQueryBuilder =
         `?`(listOf(queryParameter))
 
     override fun `?`(queryParameters: Iterable<NamedValueParameter>): UriQueryBuilder =
         copy(
-            queryParameters = buildList {
-                addAll(this@UriBuilder.queryParameters)
-                addAll(
-                    queryParameters.map { (name, value) ->
-                        Parameter.NamedValue(
-                            escape(name, this@UriBuilder::escapeQueryValue),
-                            value?.let { escape(it, this@UriBuilder::escapeQueryValue) },
-                        )
-                    }
-                )
+            queryParameters = this@UriBuilder.queryParameters + queryParameters.map { (name, value) ->
+                Parameter.NamedValue(name, value)
             }
         )
 
@@ -60,34 +44,24 @@ internal data class UriBuilder(
         `?`(queryParameters)
 
     override fun `#`(fragmentParameter: Any): UriFragmentBuilder =
-        copy(
-            fragmentParameters = buildList {
-                addAll(this@UriBuilder.fragmentParameters)
-                add(Parameter.SingleValue(escape(fragmentParameter, this@UriBuilder::escapeFragmentValue)))
-            }
-        ).fragmentBuildingView()
+        copy(fragmentParameters = this@UriBuilder.fragmentParameters + Parameter.SingleValue(fragmentParameter))
+            .fragmentBuildingView()
 
     override fun `#`(fragmentParameter: NamedValueParameter): UriFragmentBuilder =
         `#`(listOf(fragmentParameter))
 
     override fun `#`(fragmentParameters: Iterable<NamedValueParameter>): UriFragmentBuilder =
         copy(
-            fragmentParameters = buildList {
-                addAll(this@UriBuilder.fragmentParameters)
-                addAll(
-                    fragmentParameters.map { (name, value) ->
-                        Parameter.NamedValue(
-                            escape(name, this@UriBuilder::escapeFragmentValue),
-                            value?.let { escape(it, this@UriBuilder::escapeFragmentValue) },
-                        )
-                    }
-                )
+            fragmentParameters = this@UriBuilder.fragmentParameters + fragmentParameters.map { (name, value) ->
+                Parameter.NamedValue(name, value)
             }
-        ).fragmentBuildingView()
+        )
+            .fragmentBuildingView()
 
     override fun buildStringUri(): String {
         fun StringBuilder.appendParameters(
             parameters: List<Parameter>,
+            escapingFunction: (String) -> String,
             sectionDelimiter: Char,
             parametersDelimiter: Char,
         ) {
@@ -95,8 +69,12 @@ internal data class UriBuilder(
                 append(sectionDelimiter)
                 parameters.forEachIndexed { index, parameter ->
                     when (parameter) {
-                        is Parameter.SingleValue -> append(parameter.value)
-                        is Parameter.NamedValue -> append("${parameter.name}=${parameter.value}")
+                        is Parameter.SingleValue -> append(escape(parameter.value, escapingFunction))
+                        is Parameter.NamedValue -> {
+                            val name = escape(parameter.name, escapingFunction)
+                            val value = parameter.value?.let { escape(it, escapingFunction) } ?: ""
+                            append("$name=$value")
+                        }
                     }
                     if (index < parameters.size - 1) {
                         append(parametersDelimiter)
@@ -108,19 +86,16 @@ internal data class UriBuilder(
         return buildString {
             pathSegments.forEach { segment ->
                 append('/')
-                append(segment)
+                append(escape(segment, this@UriBuilder::escapePathSegment))
             }
-            appendParameters(queryParameters, '?', '&')
-            appendParameters(fragmentParameters, '#', '&')
+            appendParameters(queryParameters, this@UriBuilder::escapeQueryValue, '?', '&')
+            appendParameters(fragmentParameters, this@UriBuilder::escapeFragmentValue, '#', '&')
         }
     }
 
     override fun buildUri(): URI = URI(buildStringUri())
 
-    private fun escapePathSegment(pathSegment: String): String {
-        // TODO path escaping
-        return pathSegment
-    }
+    private fun escapePathSegment(pathSegment: String): String = Escaper.escape(pathSegment, PATH_SEGMENT)
 
     private fun escapeQueryValue(queryValue: String): String {
         // TODO query escaping

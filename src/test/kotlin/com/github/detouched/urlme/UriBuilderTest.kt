@@ -21,7 +21,9 @@ internal class UriBuilderTest {
                 path() / "foo" / "bar" to "/foo/bar",
                 path() / "this" / "" / "that" to "/this//that",
                 path() / "this" / "" / "that" / "" to "/this//that/",
-//                path() / "this" / "that" / "/this and that" to "/this/that/%2Fthis%20and%20that",
+                path() / "this" / "that" / "/this and that" to "/this/that/%2Fthis%20and%20that",
+                path() / "Zürich" to "/Z%C3%BCrich",
+                path() / "😀" to "/%F0%9F%98%80",
             )
                 .map { (actual, expected) -> Arguments.of(actual.buildStringUri(), expected) }
                 .asStream()
