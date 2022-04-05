@@ -23,8 +23,10 @@ internal data class UriBuilder(
     override fun div(pathSegments: Iterable<Any>): UriPathBuilder =
         copy(pathSegments = this@UriBuilder.pathSegments + pathSegments)
 
-    override fun `?`(queryParameter: Any): UriQueryBuilder =
-        copy(queryParameters = this@UriBuilder.queryParameters + Parameter.SingleValue(queryParameter))
+    override fun `?`(queryParameter: Any): UriQueryBuilder {
+        require(queryParameter.toString().isNotBlank()) { "Query parameter must not be blank" }
+        return copy(queryParameters = this@UriBuilder.queryParameters + Parameter.SingleValue(queryParameter))
+    }
 
     override fun `?`(queryParameter: NamedValueParameter): UriQueryBuilder =
         `?`(listOf(queryParameter))
@@ -32,6 +34,7 @@ internal data class UriBuilder(
     override fun `?`(queryParameters: Iterable<NamedValueParameter>): UriQueryBuilder =
         copy(
             queryParameters = this@UriBuilder.queryParameters + queryParameters.map { (name, value) ->
+                require(name.toString().isNotBlank()) { "Query parameter name must not be blank" }
                 Parameter.NamedValue(name, value)
             }
         )
@@ -45,9 +48,11 @@ internal data class UriBuilder(
     override fun `&`(queryParameters: Iterable<NamedValueParameter>): UriQueryBuilder =
         `?`(queryParameters)
 
-    override fun `#`(fragmentParameter: Any): UriFragmentBuilder =
-        copy(fragmentParameters = this@UriBuilder.fragmentParameters + Parameter.SingleValue(fragmentParameter))
+    override fun `#`(fragmentParameter: Any): UriFragmentBuilder {
+        require(fragmentParameter.toString().isNotBlank()) { "Fragment parameter must not be blank" }
+        return copy(fragmentParameters = this@UriBuilder.fragmentParameters + Parameter.SingleValue(fragmentParameter))
             .fragmentBuildingView()
+    }
 
     override fun `#`(fragmentParameter: NamedValueParameter): UriFragmentBuilder =
         `#`(listOf(fragmentParameter))
@@ -55,6 +60,7 @@ internal data class UriBuilder(
     override fun `#`(fragmentParameters: Iterable<NamedValueParameter>): UriFragmentBuilder =
         copy(
             fragmentParameters = this@UriBuilder.fragmentParameters + fragmentParameters.map { (name, value) ->
+                require(name.toString().isNotBlank()) { "Fragment parameter name must not be blank" }
                 Parameter.NamedValue(name, value)
             }
         )
@@ -92,7 +98,10 @@ internal data class UriBuilder(
             }
             appendParameters(queryParameters, '?', '&') { Escaper.escape(it, NAMED_PARAMETER) }
             appendParameters(fragmentParameters, '#', '&') {
-                val type = if (fragmentParameters.size > 1) NAMED_PARAMETER else SINGLE_PARAMETER
+                val type = when (fragmentParameters.singleOrNull()) {
+                    is Parameter.SingleValue -> SINGLE_PARAMETER
+                    else -> NAMED_PARAMETER
+                }
                 Escaper.escape(it, type)
             }
         }
