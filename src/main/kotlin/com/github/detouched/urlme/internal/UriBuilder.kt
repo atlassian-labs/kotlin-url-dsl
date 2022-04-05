@@ -6,7 +6,9 @@ import com.github.detouched.urlme.UriFragmentBuilder
 import com.github.detouched.urlme.UriPathBuilder
 import com.github.detouched.urlme.UriQueryBuilder
 import com.github.detouched.urlme.internal.escape.Escaper
+import com.github.detouched.urlme.internal.escape.UriComponentType.NAMED_PARAMETER
 import com.github.detouched.urlme.internal.escape.UriComponentType.PATH_SEGMENT
+import com.github.detouched.urlme.internal.escape.UriComponentType.SINGLE_PARAMETER
 import java.net.URI
 
 @Suppress("DANGEROUS_CHARACTERS")
@@ -61,9 +63,9 @@ internal data class UriBuilder(
     override fun buildStringUri(): String {
         fun StringBuilder.appendParameters(
             parameters: List<Parameter>,
-            escapingFunction: (String) -> String,
             sectionDelimiter: Char,
             parametersDelimiter: Char,
+            escapingFunction: (String) -> String,
         ) {
             if (parameters.isNotEmpty()) {
                 append(sectionDelimiter)
@@ -86,30 +88,21 @@ internal data class UriBuilder(
         return buildString {
             pathSegments.forEach { segment ->
                 append('/')
-                append(escape(segment, this@UriBuilder::escapePathSegment))
+                append(escape(segment) { Escaper.escape(it, PATH_SEGMENT) })
             }
-            appendParameters(queryParameters, this@UriBuilder::escapeQueryValue, '?', '&')
-            appendParameters(fragmentParameters, this@UriBuilder::escapeFragmentValue, '#', '&')
+            appendParameters(queryParameters, '?', '&') { Escaper.escape(it, NAMED_PARAMETER) }
+            appendParameters(fragmentParameters, '#', '&') {
+                val type = if (fragmentParameters.size > 1) NAMED_PARAMETER else SINGLE_PARAMETER
+                Escaper.escape(it, type)
+            }
         }
     }
 
     override fun buildUri(): URI = URI(buildStringUri())
 
-    private fun escapePathSegment(pathSegment: String): String = Escaper.escape(pathSegment, PATH_SEGMENT)
-
-    private fun escapeQueryValue(queryValue: String): String {
-        // TODO query escaping
-        return queryValue
-    }
-
-    private fun escapeFragmentValue(fragmentValue: String): String {
-        // TODO fragment escaping
-        return fragmentValue
-    }
-
     private fun escape(value: Any, escapingFunction: (String) -> String): String =
         when (value) {
-            is RawValue -> value.toString()
+            is RawValue -> value.rawValue.toString()
             else -> escapingFunction(value.toString())
         }
 

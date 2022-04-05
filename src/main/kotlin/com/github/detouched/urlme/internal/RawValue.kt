@@ -1,3 +1,3 @@
 package com.github.detouched.urlme.internal
 
-internal class RawValue(value: Any)
+internal class RawValue(val rawValue: Any)
