@@ -28,6 +28,7 @@ internal class UriBuilderTest {
                 path() / "привет" to "/%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82",
                 path() / "foo/bar" to "/foo%2Fbar",
                 path() / "foo/bar".raw() to "/foo/bar",
+                path() / listOf("foo", "bar") to "/foo/bar",
             )
                 .map { (actual, expected) -> Arguments.of(actual.buildStringUri(), expected) }
                 .asStream()
@@ -47,6 +48,7 @@ internal class UriBuilderTest {
                 path() / "foo" `?` ("name" to null) to "/foo?name=",
                 path() / "foo" `?` ("name" to "value") to "/foo?name=value",
                 path() / "foo" `?` "single" `&` ("bar" to null) `&` ("name" to "value") to "/foo?single&bar=&name=value",
+                path() / "foo" `?` listOf("foo" to "bar", "baz" to null) to "/foo?foo=bar&baz=",
                 path() / "foo" `?` "this / that" to "/foo?this%20/%20that",
                 path() / "foo" `?` "Zürich" to "/foo?Z%C3%BCrich",
                 path() / "foo" `?` ("🤩" to "мир") to "/foo?%F0%9F%A4%A9=%D0%BC%D0%B8%D1%80",
@@ -73,6 +75,7 @@ internal class UriBuilderTest {
                 path() / "foo" `#` ("name" to null) to "/foo#name=",
                 path() / "foo" `#` ("name" to "value") to "/foo#name=value",
                 path() / "foo" `#` "single" `&` ("bar" to null) `&` ("name" to "value") to "/foo#single&bar=&name=value",
+                path() / "foo" `#` listOf("foo" to "bar", "baz" to null) to "/foo#foo=bar&baz=",
                 path() / "foo" `#` "this / that" to "/foo#this%20/%20that",
                 path() / "foo" `#` "Zürich" to "/foo#Z%C3%BCrich",
                 path() / "foo" `#` ("🤩" to "мир") to "/foo#%F0%9F%A4%A9=%D0%BC%D0%B8%D1%80",
@@ -91,6 +94,26 @@ internal class UriBuilderTest {
     @ParameterizedTest
     @ArgumentsSource(FragmentTestArguments::class)
     fun `WHEN fragment parameters provided THEN uri is valid`(actual: String, expected: String) {
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    internal class QueryAndFragmentTestArguments : ArgumentsProvider {
+        override fun provideArguments(context: ExtensionContext) =
+            sequenceOf(
+                path() / "" `?` "foo" `#` ("bar" to "baz") to "/?foo#bar=baz",
+                path() / "foo" `?` ("foo" to "bar") `#` "baz" to "/foo?foo=bar#baz",
+                path() / "foo" `?` ("bar" to null) `#` ("name" to null) to "/foo?bar=#name=",
+                path() / "foo" / "bar" `?` ("hello" to "world") `#` ("name" to "value") to "/foo/bar?hello=world#name=value",
+                path() / "😁" / "Zürich" `?` "🙃" `#` "😉" to "/%F0%9F%98%81/Z%C3%BCrich?%F0%9F%99%83#%F0%9F%98%89",
+                path() / "foo/bar".raw() `?` "baz=qux".raw() `#` "fl@t".raw() to "/foo/bar?baz=qux#fl@t",
+            )
+                .map { (actual, expected) -> Arguments.of(actual.buildStringUri(), expected) }
+                .asStream()
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(QueryAndFragmentTestArguments::class)
+    fun `WHEN query and fragments parameters provided THEN uri is valid`(actual: String, expected: String) {
         assertThat(actual).isEqualTo(expected)
     }
 
