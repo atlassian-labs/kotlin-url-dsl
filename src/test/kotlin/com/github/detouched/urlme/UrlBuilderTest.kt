@@ -2,7 +2,7 @@ package com.github.detouched.urlme
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.github.detouched.urlme.UriBuilder.path
+import com.github.detouched.urlme.UrlBuilder.path
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider
 import org.junit.jupiter.params.provider.ArgumentsSource
 import kotlin.streams.asStream
 
-internal class UriBuilderTest {
+internal class UrlBuilderTest {
 
     internal class PathTestArguments : ArgumentsProvider {
         override fun provideArguments(context: ExtensionContext) =
@@ -117,7 +117,7 @@ internal class UriBuilderTest {
         assertThat(actual).isEqualTo(expected)
     }
 
-    internal class InvalidUriTestArguments : ArgumentsProvider {
+    internal class InvalidUrlTestArguments : ArgumentsProvider {
         override fun provideArguments(context: ExtensionContext) =
             sequenceOf(
                 { path() / "foo" `?` "" },
@@ -136,7 +136,7 @@ internal class UriBuilderTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(InvalidUriTestArguments::class)
+    @ArgumentsSource(InvalidUrlTestArguments::class)
     fun `WHEN invalid uri built THEN exception is thrown`(buildUri: () -> Nothing) {
         assertThrows<IllegalArgumentException> { buildUri() }
     }

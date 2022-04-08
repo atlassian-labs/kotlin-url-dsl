@@ -2,7 +2,7 @@ package com.github.detouched.urlme
 
 import java.net.URI
 
-interface UriBuildTerminator {
+interface UrlBuildTerminator {
     fun buildStringUri(): String
     fun buildUri(): URI
 }

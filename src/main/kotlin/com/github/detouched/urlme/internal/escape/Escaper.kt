@@ -3,7 +3,7 @@ package com.github.detouched.urlme.internal.escape
 import java.io.ByteArrayOutputStream
 
 internal object Escaper {
-    fun escape(value: String, componentType: UriComponentType): String {
+    fun escape(value: String, componentType: UrlComponentType): String {
         if (value.isBlank()) return value
 
         val bytes = value.toByteArray()

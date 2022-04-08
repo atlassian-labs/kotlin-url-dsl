@@ -1,65 +1,65 @@
 package com.github.detouched.urlme.internal
 
 import com.github.detouched.urlme.NamedValueParameter
-import com.github.detouched.urlme.UriBuildTerminator
-import com.github.detouched.urlme.UriFragmentBuilder
-import com.github.detouched.urlme.UriPathBuilder
-import com.github.detouched.urlme.UriQueryBuilder
+import com.github.detouched.urlme.UrlBuildTerminator
+import com.github.detouched.urlme.UrlFragmentBuilder
+import com.github.detouched.urlme.UrlPathBuilder
+import com.github.detouched.urlme.UrlQueryBuilder
 import com.github.detouched.urlme.internal.escape.Escaper
-import com.github.detouched.urlme.internal.escape.UriComponentType.NAMED_PARAMETER
-import com.github.detouched.urlme.internal.escape.UriComponentType.PATH_SEGMENT
-import com.github.detouched.urlme.internal.escape.UriComponentType.SINGLE_PARAMETER
+import com.github.detouched.urlme.internal.escape.UrlComponentType.NAMED_PARAMETER
+import com.github.detouched.urlme.internal.escape.UrlComponentType.PATH_SEGMENT
+import com.github.detouched.urlme.internal.escape.UrlComponentType.SINGLE_PARAMETER
 import java.net.URI
 
 @Suppress("DANGEROUS_CHARACTERS")
-internal data class UriBuilder(
+internal data class UrlBuilder(
     val pathSegments: List<Any> = emptyList(),
     val queryParameters: List<Parameter> = emptyList(),
     val fragmentParameters: List<Parameter> = emptyList(),
-) : UriPathBuilder, UriQueryBuilder, UriBuildTerminator {
-    override fun div(pathSegment: Any): UriPathBuilder =
+) : UrlPathBuilder, UrlQueryBuilder, UrlBuildTerminator {
+    override fun div(pathSegment: Any): UrlPathBuilder =
         div(listOf(pathSegment))
 
-    override fun div(pathSegments: Iterable<Any>): UriPathBuilder =
-        copy(pathSegments = this@UriBuilder.pathSegments + pathSegments)
+    override fun div(pathSegments: Iterable<Any>): UrlPathBuilder =
+        copy(pathSegments = this@UrlBuilder.pathSegments + pathSegments)
 
-    override fun `?`(queryParameter: Any): UriQueryBuilder {
+    override fun `?`(queryParameter: Any): UrlQueryBuilder {
         require(queryParameter.toString().isNotBlank()) { "Query parameter must not be blank" }
-        return copy(queryParameters = this@UriBuilder.queryParameters + Parameter.SingleValue(queryParameter))
+        return copy(queryParameters = this@UrlBuilder.queryParameters + Parameter.SingleValue(queryParameter))
     }
 
-    override fun `?`(queryParameter: NamedValueParameter): UriQueryBuilder =
+    override fun `?`(queryParameter: NamedValueParameter): UrlQueryBuilder =
         `?`(listOf(queryParameter))
 
-    override fun `?`(queryParameters: Iterable<NamedValueParameter>): UriQueryBuilder =
+    override fun `?`(queryParameters: Iterable<NamedValueParameter>): UrlQueryBuilder =
         copy(
-            queryParameters = this@UriBuilder.queryParameters + queryParameters.map { (name, value) ->
+            queryParameters = this@UrlBuilder.queryParameters + queryParameters.map { (name, value) ->
                 require(name.toString().isNotBlank()) { "Query parameter name must not be blank" }
                 Parameter.NamedValue(name, value)
             }
         )
 
-    override fun `&`(queryParameter: Any): UriQueryBuilder =
+    override fun `&`(queryParameter: Any): UrlQueryBuilder =
         `?`(queryParameter)
 
-    override fun `&`(queryParameter: NamedValueParameter): UriQueryBuilder =
+    override fun `&`(queryParameter: NamedValueParameter): UrlQueryBuilder =
         `?`(queryParameter)
 
-    override fun `&`(queryParameters: Iterable<NamedValueParameter>): UriQueryBuilder =
+    override fun `&`(queryParameters: Iterable<NamedValueParameter>): UrlQueryBuilder =
         `?`(queryParameters)
 
-    override fun `#`(fragmentParameter: Any): UriFragmentBuilder {
+    override fun `#`(fragmentParameter: Any): UrlFragmentBuilder {
         require(fragmentParameter.toString().isNotBlank()) { "Fragment parameter must not be blank" }
-        return copy(fragmentParameters = this@UriBuilder.fragmentParameters + Parameter.SingleValue(fragmentParameter))
+        return copy(fragmentParameters = this@UrlBuilder.fragmentParameters + Parameter.SingleValue(fragmentParameter))
             .fragmentBuildingView()
     }
 
-    override fun `#`(fragmentParameter: NamedValueParameter): UriFragmentBuilder =
+    override fun `#`(fragmentParameter: NamedValueParameter): UrlFragmentBuilder =
         `#`(listOf(fragmentParameter))
 
-    override fun `#`(fragmentParameters: Iterable<NamedValueParameter>): UriFragmentBuilder =
+    override fun `#`(fragmentParameters: Iterable<NamedValueParameter>): UrlFragmentBuilder =
         copy(
-            fragmentParameters = this@UriBuilder.fragmentParameters + fragmentParameters.map { (name, value) ->
+            fragmentParameters = this@UrlBuilder.fragmentParameters + fragmentParameters.map { (name, value) ->
                 require(name.toString().isNotBlank()) { "Fragment parameter name must not be blank" }
                 Parameter.NamedValue(name, value)
             }
@@ -115,15 +115,15 @@ internal data class UriBuilder(
             else -> escapingFunction(value.toString())
         }
 
-    private fun fragmentBuildingView() = FragmentBuildingUriBuilderView(this)
+    private fun fragmentBuildingView() = FragmentBuildingUrlBuilderView(this)
 }
 
-internal class FragmentBuildingUriBuilderView(
-    private val uriBuilder: UriBuilder,
-) : UriFragmentBuilder, UriBuildTerminator {
-    override fun `&`(fragmentParameter: Any) = uriBuilder `#` fragmentParameter
-    override fun `&`(fragmentParameter: NamedValueParameter) = uriBuilder `#` fragmentParameter
-    override fun `&`(fragmentParameters: Iterable<NamedValueParameter>) = uriBuilder `#` fragmentParameters
-    override fun buildStringUri() = uriBuilder.buildStringUri()
-    override fun buildUri() = uriBuilder.buildUri()
+internal class FragmentBuildingUrlBuilderView(
+    private val urlBuilder: UrlBuilder,
+) : UrlFragmentBuilder, UrlBuildTerminator {
+    override fun `&`(fragmentParameter: Any) = urlBuilder `#` fragmentParameter
+    override fun `&`(fragmentParameter: NamedValueParameter) = urlBuilder `#` fragmentParameter
+    override fun `&`(fragmentParameters: Iterable<NamedValueParameter>) = urlBuilder `#` fragmentParameters
+    override fun buildStringUri() = urlBuilder.buildStringUri()
+    override fun buildUri() = urlBuilder.buildUri()
 }
