@@ -1,9 +1,7 @@
 package com.github.detouched.urlme.internal
 
 import com.github.detouched.urlme.Authority
-import com.github.detouched.urlme.AuthorityBuilder
 import com.github.detouched.urlme.NamedValueParameter
-import com.github.detouched.urlme.UrlAuthorityBuilder
 import com.github.detouched.urlme.UrlBuildTerminator
 import com.github.detouched.urlme.UrlFragmentBuilder
 import com.github.detouched.urlme.UrlPathBuilder
@@ -25,7 +23,7 @@ internal data class InternalUrlBuilder(
     private val pathSegments: List<Any> = emptyList(),
     private val queryParameters: List<Parameter> = emptyList(),
     private val fragmentParameters: List<Parameter> = emptyList(),
-) : UrlAuthorityBuilder, UrlPostAuthorityBuilder, UrlPathBuilder, UrlQueryBuilder, UrlBuildTerminator {
+) : UrlPostAuthorityBuilder, UrlPathBuilder, UrlQueryBuilder, UrlBuildTerminator {
     init {
         if (scheme != null) require(scheme.matches(schemeRegex)) {
             "Scheme must start with a letter and contain only letters, digits, dots, plus and minus signs"
@@ -33,12 +31,6 @@ internal data class InternalUrlBuilder(
         queryParameters.validate("Query")
         fragmentParameters.validate("Fragment")
     }
-
-    override fun rem(hostname: Any): UrlPostAuthorityBuilder =
-        copy(authority = InternalAuthorityBuilder(host = hostname))
-
-    override fun rem(authority: AuthorityBuilder.() -> Authority): UrlPostAuthorityBuilder =
-        copy(authority = InternalAuthorityBuilder().authority())
 
     override fun div(pathSegment: Any): UrlPathBuilder =
         div(listOf(pathSegment))

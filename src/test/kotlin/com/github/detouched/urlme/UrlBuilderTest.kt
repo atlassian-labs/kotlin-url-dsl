@@ -119,24 +119,24 @@ internal class UrlBuilderTest {
     internal class AuthorityTestArguments : ArgumentsProvider {
         override fun provideArguments(context: ExtensionContext) =
             sequenceOf(
-                UrlBuilder * "file" % "" / "foo" / "bar" to "file:///foo/bar",
-                UrlBuilder * "http" % "example.com" to "http://example.com",
-                UrlBuilder * "https" % "example.com" / "" to "https://example.com/",
-                UrlBuilder * "https" % { "example.com" port 8080 } / "foo" to "https://example.com:8080/foo",
-                UrlBuilder * "https" % { "192.0.2.16" port 443 } to "https://192.0.2.16:443",
-                UrlBuilder * "https" % { "admin" `@` "example.com" } to "https://admin@example.com",
-                UrlBuilder * "https" % { "admin" `@` "example.com" } / "foo" to "https://admin@example.com/foo",
-                UrlBuilder * "http" % { "admin" `@` "example.com" port 8080 } / "foo" to "http://admin@example.com:8080/foo",
-                UrlBuilder * "http" % { "admin" pwd "secret" `@` "example.com" port 8080 } / "foo" to "http://admin:secret@example.com:8080/foo",
-                UrlBuilder * "http" % { "foo bar" pwd "baz:qux" `@` "example.com" port 8080 } / "foo" to "http://foo%20bar:baz%3Aqux@example.com:8080/foo",
-                UrlBuilder * "http" % "2001:0db8:0000:0000:0000:8a2e:0370:7334".ip() to "http://[2001:db8:0:0:0:8a2e:370:7334]",
-                UrlBuilder * "http" % "[2001:0db8:0000:0000:0000:8a2e:0370:7334]".raw() to "http://[2001:0db8:0000:0000:0000:8a2e:0370:7334]",
-                UrlBuilder * "http" % { "2001:0db8:0000:0000:0000:8a2e:0370:7334".ip() port 7777 } to "http://[2001:db8:0:0:0:8a2e:370:7334]:7777",
-                UrlBuilder * "http" % { "[2001:0db8:0000:0000:0000:8a2e:0370:7334]".raw() port 7788 } to "http://[2001:0db8:0000:0000:0000:8a2e:0370:7334]:7788",
-                UrlBuilder * "http" % "2001:db8::8a2e:370:7334".ip() to "http://[2001:db8:0:0:0:8a2e:370:7334]",
-                UrlBuilder * "http" % "[2001:db8::8a2e:370:7334]".raw() to "http://[2001:db8::8a2e:370:7334]",
-                UrlBuilder * "http" % "127.0.0.1".ip() to "http://127.0.0.1",
-                UrlBuilder * "http" % { "192.45.23.77".ip() port 123 } to "http://192.45.23.77:123",
+                UrlBuilder { "file" % "" / "foo" / "bar" } to "file:///foo/bar",
+                UrlBuilder { "http" % "example.com" } to "http://example.com",
+                UrlBuilder { "https" % "example.com" / "" } to "https://example.com/",
+                UrlBuilder { "https" % { "example.com" port 8080 } / "foo" } to "https://example.com:8080/foo",
+                UrlBuilder { "https" % { "192.0.2.16" port 443 } } to "https://192.0.2.16:443",
+                UrlBuilder { "https" % { "admin" `@` "example.com" } } to "https://admin@example.com",
+                UrlBuilder { "https" % { "admin" `@` "example.com" } / "foo" } to "https://admin@example.com/foo",
+                UrlBuilder { "http" % { "admin" `@` "example.com" port 8080 } / "foo" } to "http://admin@example.com:8080/foo",
+                UrlBuilder { "http" % { "admin" pwd "secret" `@` "example.com" port 8080 } / "foo" } to "http://admin:secret@example.com:8080/foo",
+                UrlBuilder { "http" % { "foo bar" pwd "baz:qux" `@` "example.com" port 8080 } / "foo" } to "http://foo%20bar:baz%3Aqux@example.com:8080/foo",
+                UrlBuilder { "http" % "2001:0db8:0000:0000:0000:8a2e:0370:7334".ip() } to "http://[2001:db8:0:0:0:8a2e:370:7334]",
+                UrlBuilder { "http" % "[2001:0db8:0000:0000:0000:8a2e:0370:7334]".raw() } to "http://[2001:0db8:0000:0000:0000:8a2e:0370:7334]",
+                UrlBuilder { "http" % { "2001:0db8:0000:0000:0000:8a2e:0370:7334".ip() port 7777 } } to "http://[2001:db8:0:0:0:8a2e:370:7334]:7777",
+                UrlBuilder { "http" % { "[2001:0db8:0000:0000:0000:8a2e:0370:7334]".raw() port 7788 } } to "http://[2001:0db8:0000:0000:0000:8a2e:0370:7334]:7788",
+                UrlBuilder { "http" % "2001:db8::8a2e:370:7334".ip() } to "http://[2001:db8:0:0:0:8a2e:370:7334]",
+                UrlBuilder { "http" % "[2001:db8::8a2e:370:7334]".raw() } to "http://[2001:db8::8a2e:370:7334]",
+                UrlBuilder { "http" % "127.0.0.1".ip() } to "http://127.0.0.1",
+                UrlBuilder { "http" % { "192.45.23.77".ip() port 123 } } to "http://192.45.23.77:123",
             )
                 .map { (actual, expected) -> Arguments.of(actual.buildStringUri(), expected) }
                 .asStream()
@@ -151,20 +151,20 @@ internal class UrlBuilderTest {
     internal class InvalidUrlTestArguments : ArgumentsProvider {
         override fun provideArguments(context: ExtensionContext) =
             sequenceOf(
-                "Non-letter first character of scheme" to { UrlBuilder * "1ttp" },
-                "Invalid character in scheme" to { UrlBuilder * "ht!tp" },
-                "Empty single query parameter" to { UrlBuilder / "foo" `?` "" },
-                "Empty raw single query parameter" to { UrlBuilder / "foo" `?` "".raw() },
-                "One of query parameters empty" to { UrlBuilder / "foo" `?` "" `&` ("bar" to "baz") },
-                "One of query parameters with empty name 1" to { UrlBuilder / "foo" `?` ("" to null) `&` ("bar" to "baz") },
-                "One of query parameters with empty name 2" to { UrlBuilder / "foo" `?` ("" to "bar") `&` ("bar" to "baz") },
-                "Empty single fragment parameter" to { UrlBuilder / "foo" `#` "" },
-                "Empty raw single fragment parameter" to { UrlBuilder / "foo" `#` "".raw() },
-                "One of fragment parameters empty" to { UrlBuilder / "foo" `#` "" `&` ("bar" to "baz") },
-                "One of fragment parameters with empty name 1" to { UrlBuilder / "foo" `#` ("" to null) `&` ("bar" to "baz") },
-                "One of fragment parameters with empty name 2" to { UrlBuilder / "foo" `#` ("" to "bar") `&` ("bar" to "baz") },
+                { UrlBuilder { "1ttp" % "ex.com" } } to "Non-letter first character of scheme",
+                { UrlBuilder { "ht!tp" % "ex.com" } } to "Invalid character in scheme",
+                { UrlBuilder / "foo" `?` "" } to "Empty single query parameter",
+                { UrlBuilder / "foo" `?` "".raw() } to "Empty raw single query parameter",
+                { UrlBuilder / "foo" `?` "" `&` ("bar" to "baz") } to "One of query parameters empty",
+                { UrlBuilder / "foo" `?` ("" to null) `&` ("bar" to "baz") } to "One of query parameters with empty name 1",
+                { UrlBuilder / "foo" `?` ("" to "bar") `&` ("bar" to "baz") } to "One of query parameters with empty name 2",
+                { UrlBuilder / "foo" `#` "" } to "Empty single fragment parameter",
+                { UrlBuilder / "foo" `#` "".raw() } to "Empty raw single fragment parameter",
+                { UrlBuilder / "foo" `#` "" `&` ("bar" to "baz") } to "One of fragment parameters empty",
+                { UrlBuilder / "foo" `#` ("" to null) `&` ("bar" to "baz") } to "One of fragment parameters with empty name 1",
+                { UrlBuilder / "foo" `#` ("" to "bar") `&` ("bar" to "baz") } to "One of fragment parameters with empty name 2",
             )
-                .map { (description, build) -> Arguments.of(description, build) }
+                .map { (build, description) -> Arguments.of(description, build) }
                 .asStream()
     }
 

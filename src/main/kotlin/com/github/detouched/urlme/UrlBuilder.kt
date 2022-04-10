@@ -7,5 +7,9 @@ object UrlBuilder : UrlMandatoryPathBuilder {
     override fun div(pathSegment: Any): UrlPathBuilder = InternalUrlBuilder() / pathSegment
     override fun div(pathSegments: Iterable<Any>): UrlPathBuilder = InternalUrlBuilder() / pathSegments
 
-    operator fun times(scheme: String): UrlAuthorityBuilder = InternalUrlBuilder(scheme = scheme)
+    // Absolute URL builder
+    operator fun invoke(build: UrlAuthorityBuilder.() -> UrlBuildTerminator): UrlBuildTerminator =
+        UrlAuthorityBuilder.build()
+
+    // TODO with given base URL
 }
