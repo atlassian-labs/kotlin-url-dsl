@@ -11,6 +11,8 @@ internal object CharacterSet {
     val unreserved = alpha + digits + bitset('-', '.', '_', '~')
     val pchar = unreserved + subDelimiters + bitset(':', '@')
 
+    val userInfoPath = unreserved + subDelimiters
+    val host = unreserved + subDelimiters
     val parameter = pchar + bitset('/', '?')
     val namedParameter = parameter - bitset('=', '&')
 
