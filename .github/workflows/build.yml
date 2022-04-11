@@ -1,0 +1,19 @@
+name: GitHub Actions Demo
+on:
+  push:
+    branches-ignore:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: amazoncorretto:8
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: ./gradlew build
+      - uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          check_name: Test report
+          report_paths: '**/build/test-results/test/TEST-*.xml'
