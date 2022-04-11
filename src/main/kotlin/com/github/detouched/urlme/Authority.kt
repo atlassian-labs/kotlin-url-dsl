@@ -1,6 +1,6 @@
 package com.github.detouched.urlme
 
-interface Authority {
+fun interface Authority {
     fun buildString(): String
 }
 

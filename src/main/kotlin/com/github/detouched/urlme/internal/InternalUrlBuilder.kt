@@ -12,6 +12,7 @@ import com.github.detouched.urlme.internal.escape.UrlComponentType
 import com.github.detouched.urlme.internal.escape.UrlComponentType.NAMED_PARAMETER
 import com.github.detouched.urlme.internal.escape.UrlComponentType.PATH_SEGMENT
 import com.github.detouched.urlme.internal.escape.UrlComponentType.SINGLE_PARAMETER
+import com.github.detouched.urlme.raw
 import java.net.URI
 
 private val schemeRegex = Regex("[a-zA-Z][a-zA-Z0-9+-.]*")
@@ -24,6 +25,29 @@ internal data class InternalUrlBuilder(
     private val queryParameters: List<Parameter> = emptyList(),
     private val fragmentParameters: List<Parameter> = emptyList(),
 ) : UrlPostAuthorityBuilder, UrlPathBuilder, UrlQueryBuilder, UrlBuildTerminator {
+    constructor(
+        baseUri: URI,
+        preservePath: Boolean,
+        preserveQuery: Boolean,
+        preserveFragment: Boolean,
+    ) : this(
+        baseUri.scheme,
+        baseUri.authority?.let { Authority { it } },
+        baseUri.rawPath
+            ?.takeIf { preservePath }
+            ?.takeUnless { it.isEmpty() }
+            ?.trimStart('/')
+            ?.split('/')
+            ?.map { it.raw() }
+            ?: emptyList(),
+        baseUri.rawQuery
+            ?.takeIf { preserveQuery }
+            .parseParameters(),
+        baseUri.rawFragment
+            ?.takeIf { preserveFragment }
+            .parseParameters(),
+    )
+
     init {
         if (scheme != null) require(scheme.matches(schemeRegex)) {
             "Scheme must start with a letter and contain only letters, digits, dots, plus and minus signs"
@@ -151,3 +175,10 @@ internal class FragmentBuildingUrlBuilderView(
     override fun buildStringUri() = urlBuilder.buildStringUri()
     override fun buildUri() = urlBuilder.buildUri()
 }
+
+private fun String?.parseParameters(): List<Parameter> =
+    this?.takeUnless { it.isEmpty() }
+        ?.split('&')
+        ?.filter { it.isNotEmpty() }
+        ?.map { Parameter.SingleValue(it.raw()) }
+        ?: emptyList()

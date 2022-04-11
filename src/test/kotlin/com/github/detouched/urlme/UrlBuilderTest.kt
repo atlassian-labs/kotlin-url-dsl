@@ -35,7 +35,7 @@ internal class UrlBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(PathTestArguments::class)
-    fun `WHEN just path provided THEN uri is valid`(actual: String, expected: String) {
+    fun `WHEN just path provided THEN url is valid`(actual: String, expected: String) {
         assertThat(actual).isEqualTo(expected)
     }
 
@@ -62,7 +62,7 @@ internal class UrlBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(QueryTestArguments::class)
-    fun `WHEN query parameters provided THEN uri is valid`(actual: String, expected: String) {
+    fun `WHEN query parameters provided THEN url is valid`(actual: String, expected: String) {
         assertThat(actual).isEqualTo(expected)
     }
 
@@ -92,7 +92,7 @@ internal class UrlBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(FragmentTestArguments::class)
-    fun `WHEN fragment parameters provided THEN uri is valid`(actual: String, expected: String) {
+    fun `WHEN fragment parameters provided THEN url is valid`(actual: String, expected: String) {
         assertThat(actual).isEqualTo(expected)
     }
 
@@ -112,7 +112,7 @@ internal class UrlBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(QueryAndFragmentTestArguments::class)
-    fun `WHEN query and fragments parameters provided THEN uri is valid`(actual: String, expected: String) {
+    fun `WHEN query and fragments parameters provided THEN url is valid`(actual: String, expected: String) {
         assertThat(actual).isEqualTo(expected)
     }
 
@@ -144,7 +144,32 @@ internal class UrlBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(AuthorityTestArguments::class)
-    fun `WHEN authority provided THEN uri is valid`(actual: String, expected: String) {
+    fun `WHEN authority provided THEN url is valid`(actual: String, expected: String) {
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    internal class BaseUrlTestArguments : ArgumentsProvider {
+        override fun provideArguments(context: ExtensionContext) =
+            sequenceOf(
+                UrlBuilder("https://example.com") to "https://example.com",
+                UrlBuilder("https://example.com/foo") to "https://example.com/foo",
+                UrlBuilder("https://example.com/foo%2Fbar") / "baz" to "https://example.com/foo%2Fbar/baz",
+                UrlBuilder("https://example.com/foo/") / "bar" to "https://example.com/foo//bar",
+                UrlBuilder("https://example.com") / "foo" to "https://example.com/foo",
+                UrlBuilder("https://example.com") `?` "foo" to "https://example.com?foo",
+                UrlBuilder("https://example.com") `#` "foo" to "https://example.com#foo",
+                UrlBuilder("https://example.com?foo=bar") `?` ("baz" to "qux") to "https://example.com?foo=bar&baz=qux",
+                UrlBuilder("https://example.com?f%20o=bar") / "what" `?` ("baz" to "qux") to "https://example.com/what?f%20o=bar&baz=qux",
+                UrlBuilder("https://example.com?foo=bar#fr%20ag") `?` ("baz" to "qux") to "https://example.com?foo=bar&baz=qux#fr%20ag",
+                UrlBuilder("https://example.com?foo=bar#frag") `#` ("baz" to "qux") to "https://example.com?foo=bar#frag&baz=qux",
+            )
+                .map { (actual, expected) -> Arguments.of(actual.buildStringUri(), expected) }
+                .asStream()
+    }
+
+    @ParameterizedTest()
+    @ArgumentsSource(BaseUrlTestArguments::class)
+    fun `WHEN url with base url built THEN url is valid`(actual: String, expected: String) {
         assertThat(actual).isEqualTo(expected)
     }
 
@@ -170,7 +195,7 @@ internal class UrlBuilderTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(InvalidUrlTestArguments::class)
-    fun `WHEN invalid uri built THEN exception is thrown`(description: String, buildUri: () -> Nothing) {
+    fun `WHEN invalid url built THEN exception is thrown`(description: String, buildUri: () -> Nothing) {
         assertThrows<IllegalArgumentException> { buildUri() }
     }
 }
