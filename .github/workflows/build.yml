@@ -6,8 +6,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: amazoncorretto:8
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
