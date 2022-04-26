@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.6.20"
+    id("org.jetbrains.dokka") version "1.6.21"
 }
 
 group = "com.github.detouched"
@@ -14,9 +15,19 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter", "junit-jupiter-engine", junitVersion)
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
+    }
+
+    // This task is added by Gradle when we use java.withJavadocJar()
+    named<Jar>("javadocJar") {
+        from(dokkaJavadoc)
     }
 
     test {
