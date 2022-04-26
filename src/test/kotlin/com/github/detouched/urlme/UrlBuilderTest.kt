@@ -196,6 +196,6 @@ internal class UrlBuilderTest {
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(InvalidUrlTestArguments::class)
     fun `WHEN invalid url built THEN exception is thrown`(description: String, buildUri: () -> Nothing) {
-        assertThrows<IllegalArgumentException> { buildUri() }
+        assertThrows<IllegalArgumentException>(description) { buildUri() }
     }
 }
