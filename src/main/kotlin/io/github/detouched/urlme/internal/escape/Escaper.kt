@@ -1,4 +1,4 @@
-package com.github.detouched.urlme.internal.escape
+package io.github.detouched.urlme.internal.escape
 
 import java.io.ByteArrayOutputStream
 

@@ -1,4 +1,4 @@
-package com.github.detouched.urlme
+package io.github.detouched.urlme
 
 interface UrlMandatoryPathBuilder {
     operator fun div(pathSegment: Any): UrlPathBuilder

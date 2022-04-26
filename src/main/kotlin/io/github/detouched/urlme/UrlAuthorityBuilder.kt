@@ -1,7 +1,7 @@
-package com.github.detouched.urlme
+package io.github.detouched.urlme
 
-import com.github.detouched.urlme.internal.InternalAuthorityBuilder
-import com.github.detouched.urlme.internal.InternalUrlBuilder
+import io.github.detouched.urlme.internal.InternalAuthorityBuilder
+import io.github.detouched.urlme.internal.InternalUrlBuilder
 
 object UrlAuthorityBuilder {
     operator fun String.rem(hostname: Any): UrlPostAuthorityBuilder =

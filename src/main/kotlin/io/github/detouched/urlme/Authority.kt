@@ -1,4 +1,4 @@
-package com.github.detouched.urlme
+package io.github.detouched.urlme
 
 fun interface Authority {
     fun buildString(): String

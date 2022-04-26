@@ -1,4 +1,4 @@
-package com.github.detouched.urlme
+package io.github.detouched.urlme
 
 @Suppress("FunctionName")
 interface UrlQueryBuilder : ConnectingUrlFragmentBuilder, UrlBuildTerminator {

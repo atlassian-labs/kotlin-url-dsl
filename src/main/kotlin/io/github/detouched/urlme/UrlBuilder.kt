@@ -1,6 +1,6 @@
-package com.github.detouched.urlme
+package io.github.detouched.urlme
 
-import com.github.detouched.urlme.internal.InternalUrlBuilder
+import io.github.detouched.urlme.internal.InternalUrlBuilder
 import java.net.URI
 
 object UrlBuilder : UrlMandatoryPathBuilder {

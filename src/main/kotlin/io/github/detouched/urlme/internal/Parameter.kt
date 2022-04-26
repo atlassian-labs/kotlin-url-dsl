@@ -1,4 +1,4 @@
-package com.github.detouched.urlme.internal
+package io.github.detouched.urlme.internal
 
 sealed class Parameter {
     data class SingleValue(val value: Any) : Parameter()

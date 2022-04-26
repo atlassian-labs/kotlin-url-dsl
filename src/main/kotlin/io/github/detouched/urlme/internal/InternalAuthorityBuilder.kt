@@ -1,12 +1,12 @@
-package com.github.detouched.urlme.internal
+package io.github.detouched.urlme.internal
 
-import com.github.detouched.urlme.Authority
-import com.github.detouched.urlme.AuthorityBuilder
-import com.github.detouched.urlme.AuthorityHostnameBuilder
-import com.github.detouched.urlme.AuthorityPortBuilder
-import com.github.detouched.urlme.internal.escape.Escaper
-import com.github.detouched.urlme.internal.escape.UrlComponentType.HOST
-import com.github.detouched.urlme.internal.escape.UrlComponentType.USER_INFO_PART
+import io.github.detouched.urlme.Authority
+import io.github.detouched.urlme.AuthorityBuilder
+import io.github.detouched.urlme.AuthorityHostnameBuilder
+import io.github.detouched.urlme.AuthorityPortBuilder
+import io.github.detouched.urlme.internal.escape.Escaper
+import io.github.detouched.urlme.internal.escape.UrlComponentType.HOST
+import io.github.detouched.urlme.internal.escape.UrlComponentType.USER_INFO_PART
 import java.net.Inet6Address
 import java.net.InetAddress
 

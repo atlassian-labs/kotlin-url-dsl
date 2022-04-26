@@ -5,7 +5,7 @@ plugins {
     signing
 }
 
-group = "com.github.detouched"
+group = "io.github.detouched"
 version = "0.1-SNAPSHOT"
 
 dependencies {

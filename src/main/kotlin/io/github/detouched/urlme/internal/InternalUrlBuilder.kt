@@ -1,18 +1,18 @@
-package com.github.detouched.urlme.internal
+package io.github.detouched.urlme.internal
 
-import com.github.detouched.urlme.Authority
-import com.github.detouched.urlme.NamedValueParameter
-import com.github.detouched.urlme.UrlBuildTerminator
-import com.github.detouched.urlme.UrlFragmentBuilder
-import com.github.detouched.urlme.UrlPathBuilder
-import com.github.detouched.urlme.UrlPostAuthorityBuilder
-import com.github.detouched.urlme.UrlQueryBuilder
-import com.github.detouched.urlme.internal.escape.Escaper
-import com.github.detouched.urlme.internal.escape.UrlComponentType
-import com.github.detouched.urlme.internal.escape.UrlComponentType.NAMED_PARAMETER
-import com.github.detouched.urlme.internal.escape.UrlComponentType.PATH_SEGMENT
-import com.github.detouched.urlme.internal.escape.UrlComponentType.SINGLE_PARAMETER
-import com.github.detouched.urlme.raw
+import io.github.detouched.urlme.Authority
+import io.github.detouched.urlme.NamedValueParameter
+import io.github.detouched.urlme.UrlBuildTerminator
+import io.github.detouched.urlme.UrlFragmentBuilder
+import io.github.detouched.urlme.UrlPathBuilder
+import io.github.detouched.urlme.UrlPostAuthorityBuilder
+import io.github.detouched.urlme.UrlQueryBuilder
+import io.github.detouched.urlme.internal.escape.Escaper
+import io.github.detouched.urlme.internal.escape.UrlComponentType
+import io.github.detouched.urlme.internal.escape.UrlComponentType.NAMED_PARAMETER
+import io.github.detouched.urlme.internal.escape.UrlComponentType.PATH_SEGMENT
+import io.github.detouched.urlme.internal.escape.UrlComponentType.SINGLE_PARAMETER
+import io.github.detouched.urlme.raw
 import java.net.URI
 
 private val schemeRegex = Regex("[a-zA-Z][a-zA-Z0-9+-.]*")
