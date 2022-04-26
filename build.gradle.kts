@@ -1,6 +1,8 @@
 plugins {
     kotlin("jvm") version "1.6.20"
     id("org.jetbrains.dokka") version "1.6.21"
+    `maven-publish`
+    signing
 }
 
 group = "com.github.detouched"
@@ -22,7 +24,10 @@ java {
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions {
+            jvmTarget = "1.8"
+            allWarningsAsErrors = true
+        }
     }
 
     // This task is added by Gradle when we use java.withJavadocJar()
@@ -32,6 +37,44 @@ tasks {
 
     test {
         useJUnitPlatform()
+    }
+
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(project.components["java"])
+                pom {
+                    packaging = "jar"
+                    name.set(project.name)
+                    description.set("URL building Kotlin DSL")
+                    url.set("https://github.com/detouched/urlme")
+                    scm {
+                        connection.set("git@github.com:detouched/urlme.git")
+                        url.set("https://github.com/detouched/urlme.git")
+                    }
+                    developers {
+                        developer {
+                            id.set("detouched")
+                            name.set("Daniil Penkin")
+                            email.set("dpenkin@gmail.com")
+                        }
+                    }
+                    licenses {
+                        license {
+                            name.set("BSD 2-Clause License")
+                            url.set("https://github.com/detouched/urlme/blob/main/LICENSE")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        val signingKey: String? by project
+        val signingPassword: String? by project
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications["release"])
     }
 }
 
