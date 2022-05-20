@@ -1,13 +1,13 @@
 plugins {
     kotlin("jvm") version "1.6.20"
     id("org.jetbrains.dokka") version "1.6.21"
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("com.jfrog.artifactory") version "4.28.3"
     `maven-publish`
     signing
 }
 
-group = "io.github.detouched"
-version = "0.1-SNAPSHOT"
+group = "com.atlassian.kotlin.dsl"
+version = "0.1"
 
 dependencies {
     val assertkVersion = "0.24"
@@ -48,22 +48,23 @@ tasks {
                     packaging = "jar"
                     name.set(project.name)
                     description.set("URL building Kotlin DSL")
-                    url.set("https://github.com/detouched/urlme")
+                    url.set("https://github.com/atlassian-labs/kotlin-url-dsl")
                     scm {
-                        connection.set("git@github.com:detouched/urlme.git")
-                        url.set("https://github.com/detouched/urlme.git")
+                        connection.set("git@github.com:atlassian-labs/kotlin-url-dsl.git")
+                        url.set("https://github.com/atlassian-labs/kotlin-url-dsl.git")
                     }
                     developers {
                         developer {
-                            id.set("detouched")
+                            id.set("dpenkin")
                             name.set("Daniil Penkin")
-                            email.set("dpenkin@gmail.com")
+                            email.set("dpenkin@atlassian.com")
                         }
                     }
                     licenses {
                         license {
-                            name.set("BSD 2-Clause License")
-                            url.set("https://github.com/detouched/urlme/blob/main/LICENSE")
+                            name.set("Apache License 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                            distribution.set("repo")
                         }
                     }
                 }
@@ -79,11 +80,18 @@ tasks {
     }
 }
 
-nexusPublishing {
-    repositories {
-        sonatype {
-            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+artifactory {
+    publish {
+        setContextUrl("https://packages.atlassian.com/")
+
+        repository {
+            setRepoKey("maven-central")
+            setUsername(System.getenv("ARTIFACTORY_USERNAME"))
+            setPassword(System.getenv("ARTIFACTORY_API_KEY"))
+        }
+        defaults {
+            publications("release")
+            setPublishIvy(false)
         }
     }
 }

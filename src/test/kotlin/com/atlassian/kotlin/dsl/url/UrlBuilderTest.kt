@@ -1,4 +1,4 @@
-package io.github.detouched.urlme
+package com.atlassian.kotlin.dsl.url
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo

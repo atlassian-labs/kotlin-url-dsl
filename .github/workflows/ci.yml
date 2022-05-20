@@ -1,0 +1,35 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: corretto
+          java-version: 8
+          cache: gradle
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Generate test report
+        uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          check_name: Test report
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+
+      - name: Release and publish
+        env:
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        if: github.ref == 'refs/heads/<releases-disabled-for-now>'
+        run: ./gradlew artifactoryPublish

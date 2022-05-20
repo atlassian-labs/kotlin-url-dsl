@@ -1,6 +1,6 @@
-package io.github.detouched.urlme
+package com.atlassian.kotlin.dsl.url
 
-import io.github.detouched.urlme.internal.InternalUrlBuilder
+import com.atlassian.kotlin.dsl.url.internal.InternalUrlBuilder
 import java.net.URI
 
 object UrlBuilder : UrlMandatoryPathBuilder {

@@ -1,7 +1,7 @@
-package io.github.detouched.urlme
+package com.atlassian.kotlin.dsl.url
 
-import io.github.detouched.urlme.internal.InternalAuthorityBuilder
-import io.github.detouched.urlme.internal.InternalUrlBuilder
+import com.atlassian.kotlin.dsl.url.internal.InternalAuthorityBuilder
+import com.atlassian.kotlin.dsl.url.internal.InternalUrlBuilder
 
 object UrlAuthorityBuilder {
     operator fun String.rem(hostname: Any): UrlPostAuthorityBuilder =

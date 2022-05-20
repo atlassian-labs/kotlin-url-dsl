@@ -1,12 +1,12 @@
-package io.github.detouched.urlme.internal
+package com.atlassian.kotlin.dsl.url.internal
 
-import io.github.detouched.urlme.Authority
-import io.github.detouched.urlme.AuthorityBuilder
-import io.github.detouched.urlme.AuthorityHostnameBuilder
-import io.github.detouched.urlme.AuthorityPortBuilder
-import io.github.detouched.urlme.internal.escape.Escaper
-import io.github.detouched.urlme.internal.escape.UrlComponentType.HOST
-import io.github.detouched.urlme.internal.escape.UrlComponentType.USER_INFO_PART
+import com.atlassian.kotlin.dsl.url.Authority
+import com.atlassian.kotlin.dsl.url.AuthorityBuilder
+import com.atlassian.kotlin.dsl.url.AuthorityHostnameBuilder
+import com.atlassian.kotlin.dsl.url.AuthorityPortBuilder
+import com.atlassian.kotlin.dsl.url.internal.escape.Escaper
+import com.atlassian.kotlin.dsl.url.internal.escape.UrlComponentType.HOST
+import com.atlassian.kotlin.dsl.url.internal.escape.UrlComponentType.USER_INFO_PART
 import java.net.Inet6Address
 import java.net.InetAddress
 

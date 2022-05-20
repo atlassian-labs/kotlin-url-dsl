@@ -1,4 +1,4 @@
-package io.github.detouched.urlme.internal
+package com.atlassian.kotlin.dsl.url.internal
 
 sealed class Parameter {
     data class SingleValue(val value: Any) : Parameter()

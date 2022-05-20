@@ -1,4 +1,4 @@
-package io.github.detouched.urlme
+package com.atlassian.kotlin.dsl.url
 
 @Suppress("FunctionName")
 interface UrlFragmentBuilder : UrlBuildTerminator {

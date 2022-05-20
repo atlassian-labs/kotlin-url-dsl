@@ -1,18 +1,18 @@
-package io.github.detouched.urlme.internal
+package com.atlassian.kotlin.dsl.url.internal
 
-import io.github.detouched.urlme.Authority
-import io.github.detouched.urlme.NamedValueParameter
-import io.github.detouched.urlme.UrlBuildTerminator
-import io.github.detouched.urlme.UrlFragmentBuilder
-import io.github.detouched.urlme.UrlPathBuilder
-import io.github.detouched.urlme.UrlPostAuthorityBuilder
-import io.github.detouched.urlme.UrlQueryBuilder
-import io.github.detouched.urlme.internal.escape.Escaper
-import io.github.detouched.urlme.internal.escape.UrlComponentType
-import io.github.detouched.urlme.internal.escape.UrlComponentType.NAMED_PARAMETER
-import io.github.detouched.urlme.internal.escape.UrlComponentType.PATH_SEGMENT
-import io.github.detouched.urlme.internal.escape.UrlComponentType.SINGLE_PARAMETER
-import io.github.detouched.urlme.raw
+import com.atlassian.kotlin.dsl.url.Authority
+import com.atlassian.kotlin.dsl.url.NamedValueParameter
+import com.atlassian.kotlin.dsl.url.UrlBuildTerminator
+import com.atlassian.kotlin.dsl.url.UrlFragmentBuilder
+import com.atlassian.kotlin.dsl.url.UrlPathBuilder
+import com.atlassian.kotlin.dsl.url.UrlPostAuthorityBuilder
+import com.atlassian.kotlin.dsl.url.UrlQueryBuilder
+import com.atlassian.kotlin.dsl.url.internal.escape.Escaper
+import com.atlassian.kotlin.dsl.url.internal.escape.UrlComponentType
+import com.atlassian.kotlin.dsl.url.internal.escape.UrlComponentType.NAMED_PARAMETER
+import com.atlassian.kotlin.dsl.url.internal.escape.UrlComponentType.PATH_SEGMENT
+import com.atlassian.kotlin.dsl.url.internal.escape.UrlComponentType.SINGLE_PARAMETER
+import com.atlassian.kotlin.dsl.url.raw
 import java.net.URI
 
 private val schemeRegex = Regex("[a-zA-Z][a-zA-Z0-9+-.]*")

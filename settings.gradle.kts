@@ -1,2 +1,1 @@
-
-rootProject.name = "urlme"
+rootProject.name = "kotlin-url-dsl"

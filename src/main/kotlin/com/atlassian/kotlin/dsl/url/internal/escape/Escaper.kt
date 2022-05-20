@@ -1,4 +1,4 @@
-package io.github.detouched.urlme.internal.escape
+package com.atlassian.kotlin.dsl.url.internal.escape
 
 import java.io.ByteArrayOutputStream
 
