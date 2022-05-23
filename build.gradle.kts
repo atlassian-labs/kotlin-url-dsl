@@ -94,6 +94,7 @@ artifactory {
         defaults {
             publications("release")
             setPublishIvy(false)
+            clientConfig.publisher.isPublishBuildInfo = false
         }
     }
 }
