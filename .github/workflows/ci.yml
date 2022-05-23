@@ -31,5 +31,5 @@ jobs:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        if: github.ref == 'refs/heads/<releases-disabled-for-now>'
+        if: github.ref == 'refs/heads/main'
         run: ./gradlew artifactoryPublish
