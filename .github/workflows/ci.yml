@@ -3,6 +3,9 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
 
       - name: Check out repository code
@@ -25,10 +28,15 @@ jobs:
           check_name: Test report
           report_paths: '**/build/test-results/test/TEST-*.xml'
 
+      - name: Get publish token
+        id: publish-token
+        if: github.ref == 'refs/heads/main'
+        uses: atlassian-labs/artifact-publish-token@v1.0.1
+        with:
+          output-modes: environment
+
       - name: Release and publish
         env:
-          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         if: github.ref == 'refs/heads/main'
