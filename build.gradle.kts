@@ -12,7 +12,7 @@ version = "0.1"
 
 dependencies {
     val assertkVersion = "0.25"
-    val junitVersion = "5.9.0"
+    val junitVersion = "5.9.1"
     testImplementation("com.willowtreeapps.assertk", "assertk-jvm", assertkVersion)
     testImplementation("org.junit.jupiter", "junit-jupiter-api", junitVersion)
     testImplementation("org.junit.jupiter", "junit-jupiter-params", junitVersion)
