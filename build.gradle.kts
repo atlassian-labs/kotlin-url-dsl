@@ -1,7 +1,6 @@
 plugins {
     kotlin("jvm") version "1.7.10"
     id("org.jetbrains.dokka") version "1.7.10"
-    id("com.jfrog.artifactory") version "4.29.0"
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
     `maven-publish`
     signing
@@ -42,6 +41,16 @@ tasks {
     }
 
     publishing {
+        repositories {
+            maven {
+                setUrl("https://packages.atlassian.com/maven-central")
+                credentials {
+                    username = System.getenv("ARTIFACTORY_USERNAME")
+                    password = System.getenv("ARTIFACTORY_API_KEY")
+                }
+            }
+        }
+
         publications {
             create<MavenPublication>("release") {
                 from(project.components["java"])
@@ -79,23 +88,6 @@ tasks {
             System.getenv("SIGNING_PASSWORD"),
         )
         sign(publishing.publications["release"])
-    }
-}
-
-artifactory {
-    publish {
-        setContextUrl("https://packages.atlassian.com/")
-
-        repository {
-            setRepoKey("maven-central")
-            setUsername(System.getenv("ARTIFACTORY_USERNAME"))
-            setPassword(System.getenv("ARTIFACTORY_API_KEY"))
-        }
-        defaults {
-            publications("release")
-            setPublishIvy(false)
-            clientConfig.publisher.isPublishBuildInfo = false
-        }
     }
 }
 
