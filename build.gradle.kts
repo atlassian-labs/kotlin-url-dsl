@@ -6,7 +6,7 @@ plugins {
     signing
 }
 
-group = "com.atlassian.kotlin.dsl"
+group = "com.atlassian.labs"
 version = "0.1"
 
 dependencies {
