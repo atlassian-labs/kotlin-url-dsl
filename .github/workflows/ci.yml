@@ -40,4 +40,4 @@ jobs:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         if: github.ref == 'refs/heads/main'
-        run: ./gradlew artifactoryPublish
+        run: ./gradlew publish
